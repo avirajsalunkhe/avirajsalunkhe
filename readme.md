@@ -54,22 +54,6 @@ fun_fact: I debug with coffee ☕
 <br clear="right"/>
 
 ---
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                     GITHUB STATS                               -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
-
-## 📊 GitHub Statistics
-
-<img height="185em" src="https://github-readme-stats.vercel.app/api?username=avirajsalunkhe&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0&ring_color=0ff0fc&theme=chartreuse-dark"/>
-&nbsp;
-<img height="185em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=avirajsalunkhe&layout=compact&langs_count=8&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&text_color=e2e8f0&theme=chartreuse-dark"/>
-
-</div>
-
----
-
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  STREAK STATS                                  -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
