@@ -130,30 +130,14 @@ fun_fact: I debug with coffee ☕
 
 <div align="center">
 
-<a href="https://github.com/avirajsalunkhe/AlgoPulse">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=AlgoPulse&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
-<a href="https://github.com/avirajsalunkhe/ClassCrew">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=ClassCrew&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
-
-<br/><br/>
-
-<a href="https://github.com/avirajsalunkhe/SafeShip">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=SafeShip&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
-<a href="https://github.com/avirajsalunkhe/cloud-mastery-bot">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=cloud-mastery-bot&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
-
-<br/><br/>
-
-<a href="https://github.com/avirajsalunkhe/FantasticNewsExtention">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=FantasticNewsExtention&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
-<a href="https://github.com/avirajsalunkhe/2D-game-in-in-Vb.net">
-  <img align="center" src="https://github-readme-stats.vercel.app/api/pin/?username=avirajsalunkhe&repo=2D-game-in-in-Vb.net&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0" />
-</a>
+| 🚀 Project | 🛠️ Tech | ⭐ Stars | 🍴 Forks | 🌐 Live |
+|---|---|---|---|---|
+| [**AlgoPulse**](https://github.com/avirajsalunkhe/AlgoPulse) | ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/AlgoPulse?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/AlgoPulse?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/AlgoPulse) |
+| [**ClassCrew**](https://github.com/avirajsalunkhe/ClassCrew) | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/ClassCrew?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/ClassCrew?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/ClassCrew) |
+| [**SafeShip**](https://github.com/avirajsalunkhe/SafeShip) | ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/SafeShip?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/SafeShip?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/SafeShip) |
+| [**Cloud Mastery Bot**](https://github.com/avirajsalunkhe/cloud-mastery-bot) | ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/cloud-mastery-bot?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/cloud-mastery-bot?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/cloud-mastery-bot) |
+| [**Fantastic News Extension**](https://github.com/avirajsalunkhe/FantasticNewsExtention) | ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/FantasticNewsExtention?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/FantasticNewsExtention?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/FantasticNewsExtention) |
+| [**2D Game in VB.NET**](https://github.com/avirajsalunkhe/2D-game-in-in-Vb.net) | ![VB.NET](https://img.shields.io/badge/VB.NET-5C2D91?style=flat-square&logo=.net&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/2D-game-in-in-Vb.net?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/2D-game-in-in-Vb.net?style=flat-square&color=7c3aed) | [![Live](https://img.shields.io/badge/Live-0ff0fc?style=flat-square&logo=vercel&logoColor=black)](https://avirajsalunkhe.github.io/2D-game-in-in-Vb.net) |
 
 </div>
 
