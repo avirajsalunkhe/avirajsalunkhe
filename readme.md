@@ -97,19 +97,6 @@ fun_fact: I debug with coffee ☕
 ---
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  TROPHIES                                      -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
-
-## 🏆 GitHub Trophies
-
-<img src="https://github-profile-trophy.vercel.app/?username=avirajsalunkhe&theme=darkhub&no-frame=true&no-bg=true&margin-w=8&column=7" alt="Trophies"/>
-
-</div>
-
----
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                     TECH STACK                                 -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 ## 🛠️ Tech Stack & Tools
