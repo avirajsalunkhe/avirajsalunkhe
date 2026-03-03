@@ -69,21 +69,6 @@ fun_fact: I debug with coffee ☕
 ---
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                     GITHUB STATS                               -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
-
-## 📊 GitHub Statistics
-
-<img height="185em" src="https://github-readme-stats.vercel.app/api?username=avirajsalunkhe&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&icon_color=7c3aed&text_color=e2e8f0&ring_color=0ff0fc&theme=chartreuse-dark"/>
-&nbsp;
-<img height="185em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=avirajsalunkhe&layout=compact&langs_count=8&hide_border=true&bg_color=0d0d0d&title_color=0ff0fc&text_color=e2e8f0&theme=chartreuse-dark"/>
-
-</div>
-
----
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  STREAK STATS                                  -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div align="center">
@@ -104,19 +89,6 @@ fun_fact: I debug with coffee ☕
 ## 📈 Contribution Activity Graph
 
 <img src="https://github-readme-activity-graph.vercel.app/graph?username=avirajsalunkhe&bg_color=0d0d0d&color=0ff0fc&line=7c3aed&point=f59e0b&area=true&area_color=7c3aed&hide_border=true&custom_title=Aviraj%27s%20Contribution%20Graph" alt="Contribution Graph" width="100%"/>
-
-</div>
-
----
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  TROPHIES                                      -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
-
-## 🏆 GitHub Trophies
-
-<img src="https://github-profile-trophy.vercel.app/?username=avirajsalunkhe&theme=darkhub&no-frame=true&no-bg=true&margin-w=8&column=7" alt="Trophies"/>
 
 </div>
 
@@ -210,19 +182,6 @@ fun_fact: I debug with coffee ☕
 | [**2D Game in VB.NET**](https://github.com/avirajsalunkhe/2D-game-in-in-Vb.net) | ![VB.NET](https://img.shields.io/badge/VB.NET-5C2D91?style=flat-square&logo=.net&logoColor=white) | ![Stars](https://img.shields.io/github/stars/avirajsalunkhe/2D-game-in-in-Vb.net?style=flat-square&color=f59e0b) | ![Forks](https://img.shields.io/github/forks/avirajsalunkhe/2D-game-in-in-Vb.net?style=flat-square&color=7c3aed) | [![Repo](https://img.shields.io/badge/Repo-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/avirajsalunkhe/2D-game-in-in-Vb.net) |
 
 </div>
-
----
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  WAKATIME CODING STATS                         -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-## ⏱️ Weekly Coding Breakdown
-
-<!--START_SECTION:waka-->
-```text
-Auto-updates with WakaTime stats after setup!
-```
-<!--END_SECTION:waka-->
 
 ---
 
