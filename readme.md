@@ -15,7 +15,7 @@
 <!-- PROFILE VIEWS + BADGES -->
 <img src="https://komarev.com/ghpvc/?username=avirajsalunkhe&label=%F0%9F%91%81%EF%B8%8F+Profile+Views&color=0ff0fc&style=for-the-badge&labelColor=0d0d0d" alt="Profile Views"/>
 &nbsp;
-<img src="https://img.shields.io/github/followers/avirajsalunkhe?label=Followers&style=for-the-badge&color=7c3aed&labelColor=0d0d0d&logo=github" alt="Followers"/>
+<img src="https://img.shields.io/badge/dynamic/json?url=https://api.github.com/users/avirajsalunkhe&query=followers&label=Followers&style=for-the-badge&color=7c3aed&labelColor=0d0d0d&logo=github" alt="Followers"/>
 &nbsp;
 <img src="https://img.shields.io/github/stars/avirajsalunkhe?label=Stars+Earned&style=for-the-badge&color=f59e0b&labelColor=0d0d0d" alt="Stars"/>
 
