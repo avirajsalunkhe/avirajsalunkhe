@@ -33,7 +33,7 @@
 
 ```yaml
 name       : Aviraj Salunkhe
-location   : India
+location   : Pune/Banglore, India
 role       : Full Stack Developer
 portfolio  : avirajsalunkhe.vercel.app
 linkedin   : in/avirajsalunkhe
