@@ -160,19 +160,6 @@ fun_fact: I debug with coffee ☕
 ---
 
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  WAKATIME CODING STATS                         -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-## ⏱️ Weekly Coding Breakdown
-
-<!--START_SECTION:waka-->
-```text
-Auto-updates with WakaTime stats after setup — see Step 7 below!
-```
-<!--END_SECTION:waka-->
-
----
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  SNAKE ANIMATION                               -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div align="center">
