@@ -1,11 +1,11 @@
 <div align="center">
 
 <!-- ANIMATED HEADER BANNER -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:00d4ff,100:7c3aed&height=200&section=header&text=Aviraj&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Full%20Stack%20Developer%20%7C%20Open%20Source%20Enthusiast&descAlignY=58&descSize=18&animation=fadeIn" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:00d4ff,100:7c3aed&height=200&section=header&text=Aviraj_Salunkhe&fontSize=70&fontColor=ffffff&fontAlignY=38&desc=Full%20Stack%20Developer%20%7C%20Open%20Source%20Enthusiast&descAlignY=58&descSize=18&animation=fadeIn" width="100%"/>
 
 <!-- TYPING ANIMATION -->
 <a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&pause=1000&color=00D4FF&center=true&vCenter=true&random=false&width=600&lines=Hey+there!+I'm+Aviraj Salunkhe+%F0%9F%91%8B;Full+Stack+Developer+%F0%9F%9A%80;Open+Source+Contributor+%F0%9F%8C%9F;Always+Learning%2C+Always+Building+%F0%9F%92%BB;Coffee+%2B+Code+%3D+Magic+%E2%9C%A8" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&pause=1000&color=00D4FF&center=true&vCenter=true&random=false&width=600&lines=Hey+there!+I'm+Aviraj+Salunkhe+%F0%9F%91%8B;Full+Stack+Developer+%F0%9F%9A%80;Open+Source+Contributor+%F0%9F%8C%9F;Always+Learning%2C+Always+Building+%F0%9F%92%BB;Coffee+%2B+Code+%3D+Magic+%E2%9C%A8" alt="Typing SVG" />
 </a>
 
 <br/>
