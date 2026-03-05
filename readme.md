@@ -75,7 +75,7 @@ fun_fact: I debug with coffee ☕
 
 ## 🔥 Daily Streak & Max Streak
 
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=avirajsalunkhe&theme=dark&hide_border=true&background=0d0d0d&stroke=0ff0fc&ring=7c3aed&fire=f59e0b&currStreakLabel=0ff0fc&sideLabels=e2e8f0&dates=888888&sideNums=0ff0fc&currStreakNum=ffffff" alt="GitHub Streak" width="600"/>
+<img src=https://github-readme-streak-stats.herokuapp.com/?user=avirajsalunkhe&theme=dark&cache_bust=123" alt="GitHub Streak" width="600"/>
 
 </div>
 
