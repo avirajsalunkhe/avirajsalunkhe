@@ -113,8 +113,7 @@ fun_fact: I debug with coffee ☕
 
 **Backend & Frameworks**
 
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?s<div align="center">
-style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 ![JSP](https://img.shields.io/badge/JSP-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
