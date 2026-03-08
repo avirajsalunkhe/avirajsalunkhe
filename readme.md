@@ -71,13 +71,7 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  STREAK STATS                                  -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
 
-## 🔥 Daily Streak & Max Streak
-
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=avirajsalunkhe&theme=dark&cache_bust=123" width="600"/>
-
-</div>
 
 ---
 
@@ -113,7 +107,13 @@ fun_fact: I debug with coffee ☕
 
 **Backend & Frameworks**
 
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?s<div align="center">
+
+## 🔥 Daily Streak & Max Streak
+
+<img src="https://streak-stats.demolab.com?user=avirajsalunkhe&theme=dark" width="600"/>
+
+</div>tyle=for-the-badge&logo=spring-boot&logoColor=white)
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 ![JSP](https://img.shields.io/badge/JSP-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
