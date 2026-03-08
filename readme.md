@@ -71,7 +71,13 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  STREAK STATS                                  -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
+<div align="center">
 
+## 🔥 Daily Streak & Max Streak
+
+<img src="https://streak-stats.demolab.com?user=avirajsalunkhe&theme=dark" width="600"/>
+
+</div>
 
 ---
 
