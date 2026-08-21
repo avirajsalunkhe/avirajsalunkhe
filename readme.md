@@ -75,7 +75,7 @@ fun_fact: I debug with coffee ☕
 
 ## 🔥 Daily Streak & Max Streak
 
-<img src="[https://streak-stats.demolab.com?user=avirajsalunkhe&theme=dark" width="600](https://github-readme-streak-stats-eight.vercel.app?user=avirajsalunkhe&theme=dark)"/>
+<img src="https://github-readme-streak-stats-eight.vercel.app?user=avirajsalunkhe&theme=dark"/>
 
 </div>
 
