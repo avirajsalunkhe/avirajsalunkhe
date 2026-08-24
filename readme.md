@@ -28,7 +28,7 @@
 <!--                       WHO I AM                                 -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 
-<img align="right" alt="Coding GIF" width="360" src="https://raw.githubusercontent.com/abhisheknaiidu/abhisheknaiidu/master/code.gif"/>
+<img align="right" alt="Coding GIF" width="360" src="https://user-images.githubusercontent.com/74038190/212898774-0a96dc1d-c908-4ce8-9dd7-a71aab6e1c2b.gif"/>
 
 ### 👨‍💻 Who I Am
 
