@@ -6,9 +6,7 @@
 <img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/assets/portrait-ember-transparent.svg" width="40%" alt="Aviraj — dot-matrix portrait"/>
 
 <!-- TYPING ANIMATION -->
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&pause=1200&color=0FF0FC&center=true&vCenter=true&random=false&width=700&lines=Hey+there!+I'm+Aviraj+%F0%9F%91%8B;Full+Stack+Developer+from+India+%F0%9F%87%AE%F0%9F%87%B3;Java+%7C+Spring+Boot+%7C+AWS+%7C+Docker;Building+Scalable+Real-World+Apps+%F0%9F%9A%80;Always+Coding%2C+Always+Evolving+%E2%9A%A1" alt="Typing SVG" />
-</a>
+
 
 <br/><br/>
 
