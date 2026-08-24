@@ -3,7 +3,7 @@
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                   EMBER PORTRAIT                                -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/assets/portrait-ember.svg" width="40%" alt="Aviraj — dot-matrix portrait"/>
+<img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/assets/portrait-ember-transparent.svg" width="40%" alt="Aviraj — dot-matrix portrait"/>
 
 <!-- TYPING ANIMATION -->
 <a href="https://git.io/typing-svg">
