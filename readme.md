@@ -13,13 +13,6 @@
 
 <br/><br/>
 
-<!-- OPEN TO WORK BANNER -->
-<img src="https://img.shields.io/badge/%F0%9F%9A%80%20Open%20to%20Work-Full%20Stack%20Developer-0ff0fc?style=for-the-badge&labelColor=002357"/>
-&nbsp;
-<img src="https://img.shields.io/badge/%F0%9F%93%8D%20Available%20In-Pune%20%26%20Bangalore-7c3aed?style=for-the-badge&labelColor=0d0d0d"/>
-
-<br/><br/>
-
 <!-- PROFILE VIEWS + BADGES -->
 <img src="https://komarev.com/ghpvc/?username=avirajsalunkhe&label=%F0%9F%91%81%EF%B8%8F+Profile+Views&color=0ff0fc&style=for-the-badge&labelColor=002357" alt="Profile Views"/>
 &nbsp;
