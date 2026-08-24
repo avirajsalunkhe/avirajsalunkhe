@@ -190,9 +190,6 @@ fun_fact: I debug with coffee ☕
 ## 🏙️ Contribution City
 
 <div align="center">
-
-<i>Every day of the last 6 months is a city block — the taller the tower, the harder that day went. Click the skyline to open it full-size, where each building shows its exact count and date on hover.</i>
-
 <a href="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/visuals/commit-city-dark.svg">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/visuals/commit-city-dark.svg">
