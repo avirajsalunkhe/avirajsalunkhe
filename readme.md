@@ -208,9 +208,6 @@ fun_fact: I debug with coffee ☕
 ## 🕸️ Language Web
 
 <div align="center">
-
-<i>Not a self-rating — both rings are measured from my public repositories.</i>
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/visuals/language-web-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/visuals/language-web-light.svg">
