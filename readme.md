@@ -1,16 +1,21 @@
 <div align="center">
 
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                   ANIMATED HEADER BANNER                       -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,40:0ff0fc,80:7c3aed,100:0d0d0d&height=220&section=header&text=Aviraj%20Salunkhe&fontSize=68&fontColor=ffffff&fontAlignY=38&desc=Full%20Stack%20Developer%20%7C%20Java%20%7C%20Spring%20Boot%20%7C%20Cloud%20%7C%20DevOps&descAlignY=58&descSize=17&animation=fadeIn&fontAlign=50" width="100%"/>
 
-<!-- TYPING ANIMATION -->
 <a href="https://git.io/typing-svg">
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&pause=1200&color=0FF0FC&center=true&vCenter=true&random=false&width=700&lines=Hey+there!+I'm+Aviraj+%F0%9F%91%8B;Full+Stack+Developer+from+India+%F0%9F%87%AE%F0%9F%87%B3;Java+%7C+Spring+Boot+%7C+AWS+%7C+Docker;Building+Scalable+Real-World+Apps+%F0%9F%9A%80;Always+Coding%2C+Always+Evolving+%E2%9A%A1" alt="Typing SVG" />
 </a>
 
 <br/><br/>
+
+<!-- EMBER PORTRAIT -->
+<img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/assets/portrait-ember.svg" width="220" alt="Aviraj — dot-matrix portrait"/>
+
+<br/><br/>
+
+<!-- OPEN TO WORK BANNER -->
+<img src="https://img.shields.io/badge/%F0%9F%9A%80%20Open%20to%20Work-Full%20Stack%20Developer-0ff0fc?style=for-the-badge&labelColor=002357"/>
+...
 
 <!-- OPEN TO WORK BANNER -->
 <img src="https://img.shields.io/badge/%F0%9F%9A%80%20Open%20to%20Work-Full%20Stack%20Developer-0ff0fc?style=for-the-badge&labelColor=002357"/>
