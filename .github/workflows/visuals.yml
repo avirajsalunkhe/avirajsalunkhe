@@ -1,0 +1,944 @@
+name: Profile Visuals
+
+# SELF-CONTAINED build of the isometric contribution city + language web.
+#
+# This one file is the entire generator. The "Write generator" step below materialises
+# the six Node scripts at runtime, so there is nothing else to add to the repo -- you
+# create this single file and you are done.
+#
+# The README block is STATIC: it holds only image URLs, because each SVG draws its own
+# header, stat chips and legend. So you paste the block into your profile README once
+# and never again -- refreshes replace the images, not your README. That is why this
+# workflow never commits to main.
+#
+# WHY A SEPARATE BRANCH: snake.yml already publishes to "output" via
+# crazy-max/ghaction-github-pages, and that action force-replaces the whole target
+# branch. Two workflows aimed at "output" would delete each other's files on every run,
+# so this one gets its own "visuals" branch. Nothing else touches it.
+
+on:
+  schedule:
+    - cron: "37 */2 * * *"      # every 2 hours, off the :00 rush
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/visuals.yml'
+  workflow_dispatch:            # force a refresh from the Actions tab
+
+permissions:
+  contents: write        # ghaction-github-pages force-pushes the "visuals" branch
+
+concurrency:
+  group: profile-visuals
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'    # needs >=18 for global fetch()
+
+      - name: Write generator
+        run: |
+          mkdir -p scripts
+          cat > scripts/util.js <<'JSEOF'
+          'use strict';
+          // Small shared helpers: colour ramps, number formatting, stable pseudo-randomness.
+
+          const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+          const hx = v => Math.round(clamp(v, 0, 255)).toString(16).padStart(2, '0');
+          const rgb = c => '#' + hx(c[0]) + hx(c[1]) + hx(c[2]);
+
+          // Piecewise-linear ramp over [position, [r,g,b]] pairs. t is clamped to 0..1.
+          function ramp(stops, t) {
+            t = clamp(t, 0, 1);
+            for (let i = 0; i < stops.length - 1; i++) {
+              const [p0, c0] = stops[i], [p1, c1] = stops[i + 1];
+              if (t <= p1) {
+                const f = p1 === p0 ? 0 : (t - p0) / (p1 - p0);
+                return [0, 1, 2].map(k => c0[k] + (c1[k] - c0[k]) * f);
+              }
+            }
+            return stops[stops.length - 1][1].slice();
+          }
+
+          const mul = (c, k) => c.map(v => v * k);
+          const mix = (a, b, f) => a.map((v, i) => v + (b[i] - v) * f);
+
+          const esc = s => String(s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+          // Trim trailing zeros so the SVG stays small: 12.50 -> "12.5", 12.00 -> "12".
+          const n = (v, d = 1) => {
+            const s = (+v).toFixed(d);
+            return d === 0 ? s : s.replace(/\.?0+$/, '');
+          };
+
+          // FNV-1a + final avalanche. Deterministic so re-running the build with the same
+          // data produces a byte-identical SVG (no pointless git churn every 3 hours).
+          function rnd(seed) {
+            let h = 2166136261 >>> 0;
+            for (let i = 0; i < seed.length; i++) {
+              h ^= seed.charCodeAt(i);
+              h = Math.imul(h, 16777619) >>> 0;
+            }
+            h ^= h >>> 15; h = Math.imul(h, 2246822507) >>> 0; h ^= h >>> 13;
+            return (h >>> 0) / 4294967296;
+          }
+
+          module.exports = { clamp, hx, rgb, ramp, mul, mix, esc, n, rnd };
+          JSEOF
+          cat > scripts/gh-data.js <<'JSEOF'
+          'use strict';
+          // Live GitHub data for the profile visuals.
+          //
+          // Contributions: GraphQL when a token is present (exact counts, and private ones too
+          // if the token is a PAT with read:user). Without a token we fall back to the public
+          // contributions HTML -- GitHub dropped data-count from the <td>, but the exact number
+          // is still in the paired <tool-tip>, so the fallback is not lossy.
+          //
+          // Languages: REST byte counts per repo, forks and archived repos skipped by default.
+
+          const API = 'https://api.github.com';
+          const UA = 'avirajsalunkhe-profile-visuals';
+
+          const hdr = (token, extra) => {
+            const h = Object.assign({ 'user-agent': UA, accept: 'application/vnd.github+json' }, extra);
+            if (token) h.authorization = 'Bearer ' + token;
+            return h;
+          };
+
+          async function get(url, token, extra) {
+            let last = '';
+            for (let a = 0; a < 4; a++) {
+              const res = await fetch(url, { headers: hdr(token, extra) });
+              if (res.ok) return res;
+              last = `${res.status} ${res.statusText}`;
+              // 403/429 are the abuse + rate limiters; 5xx is transient. Back off and retry.
+              if (a < 3 && (res.status === 403 || res.status === 429 || res.status >= 500)) {
+                await new Promise(r => setTimeout(r, 1500 * 2 ** a));
+                continue;
+              }
+              throw new Error(`GET ${url} -> ${last}\n${(await res.text()).slice(0, 300)}`);
+            }
+            throw new Error(`GET ${url} -> ${last} (retries exhausted)`);
+          }
+
+          /* ------------------------------------------------------------------ dates */
+
+          const iso = d => d.toISOString().slice(0, 10);
+          const addDays = (d, k) => new Date(d.getTime() + k * 86400000);
+
+          // The window the city is built over: `months` back from today, then snapped back to
+          // the preceding Sunday so every column in the isometric grid is a whole week.
+          function calendarWindow(months = 6, now = new Date()) {
+            const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            const from = new Date(to.getTime());
+            from.setUTCMonth(from.getUTCMonth() - months);
+            from.setUTCDate(from.getUTCDate() + 1);
+            const snapped = addDays(from, -from.getUTCDay()); // getUTCDay: 0 = Sunday
+            return { from: iso(snapped), to: iso(to) };
+          }
+
+          /* ----------------------------------------------------- contributions */
+
+          async function viaGraphQL(login, token, from, to) {
+            const query = `query($login:String!,$from:DateTime!,$to:DateTime!){
+              user(login:$login){ contributionsCollection(from:$from,to:$to){
+                contributionCalendar{ weeks{ contributionDays{ date contributionCount } } } } } }`;
+            const res = await fetch(API + '/graphql', {
+              method: 'POST',
+              headers: hdr(token, { 'content-type': 'application/json' }),
+              body: JSON.stringify({ query, variables: { login, from: from + 'T00:00:00Z', to: to + 'T23:59:59Z' } }),
+            });
+            const j = await res.json();
+            if (j.errors) throw new Error('graphql: ' + JSON.stringify(j.errors).slice(0, 300));
+            const cal = j.data && j.data.user && j.data.user.contributionsCollection.contributionCalendar;
+            if (!cal) throw new Error('graphql: no contribution calendar for ' + login);
+            return cal.weeks
+              .flatMap(w => w.contributionDays)
+              .map(d => ({ date: d.date, count: d.contributionCount }));
+          }
+
+          async function viaHTML(login, from, to) {
+            const out = new Map();
+            // The endpoint always answers with a whole calendar year, so fetch each year the
+            // window touches and merge.
+            for (let y = +from.slice(0, 4); y <= +to.slice(0, 4); y++) {
+              const res = await get(
+                `https://github.com/users/${login}/contributions?from=${y}-01-01&to=${y}-12-31`,
+                null, { accept: 'text/html' });
+              const html = await res.text();
+
+              const tips = new Map();
+              for (const m of html.matchAll(
+                /<tool-tip[^>]*\bfor="(contribution-day-component-[\d-]+)"[^>]*>([^<]*)<\/tool-tip>/g)) {
+                const txt = m[2];
+                tips.set(m[1], /^No contributions/i.test(txt)
+                  ? 0
+                  : parseInt(((txt.match(/^([\d,]+)/) || [, '0'])[1]).replace(/,/g, ''), 10) || 0);
+              }
+              for (const m of html.matchAll(
+                /<td[^>]*\bdata-date="(\d{4}-\d{2}-\d{2})"[^>]*\bid="(contribution-day-component-[\d-]+)"/g)) {
+                const c = tips.get(m[2]);
+                out.set(m[1], c === undefined ? 0 : c);
+              }
+            }
+            if (!out.size) throw new Error('html: parsed 0 contribution days for ' + login);
+            return [...out].map(([date, count]) => ({ date, count }));
+          }
+
+          // Returns one entry per day across [from, to] inclusive, gaps filled with 0.
+          async function fetchContributions(login, token, from, to) {
+            let raw, via;
+            if (token) {
+              try { raw = await viaGraphQL(login, token, from, to); via = 'graphql'; }
+              catch (e) { console.warn('  graphql failed (' + e.message.split('\n')[0] + '), falling back to html'); }
+            }
+            if (!raw) { raw = await viaHTML(login, from, to); via = 'html'; }
+
+            const have = new Map(raw.map(d => [d.date, d.count]));
+            const days = [];
+            for (let d = new Date(from + 'T00:00:00Z'); iso(d) <= to; d = addDays(d, 1)) {
+              const k = iso(d);
+              days.push({ date: k, count: have.get(k) || 0 });
+            }
+            return { days, via };
+          }
+
+          /* --------------------------------------------------------- languages */
+
+          async function fetchLanguages(login, token, opt = {}) {
+            const repos = [];
+            for (let page = 1; page <= 10; page++) {
+              const res = await get(`${API}/users/${login}/repos?per_page=100&page=${page}&sort=pushed`, token);
+              const batch = await res.json();
+              if (!Array.isArray(batch)) throw new Error('repos: unexpected payload ' + JSON.stringify(batch).slice(0, 200));
+              repos.push(...batch);
+              if (batch.length < 100) break;
+            }
+            const kept = repos.filter(r =>
+              (opt.includeForks || !r.fork) &&
+              (opt.includeArchived || !r.archived) &&
+              !(opt.exclude || []).includes(r.name));
+
+            const bytes = {};        // language -> total bytes
+            const repoCount = {};    // language -> number of repos containing it
+            for (const r of kept) {
+              const res = await get(r.languages_url, token);
+              const langs = await res.json();
+              for (const [k, v] of Object.entries(langs)) {
+                bytes[k] = (bytes[k] || 0) + v;
+                repoCount[k] = (repoCount[k] || 0) + 1;
+              }
+            }
+            return {
+              bytes,
+              repoCount,
+              repos: kept.length,
+              stars: kept.reduce((s, r) => s + (r.stargazers_count || 0), 0),
+              forks: kept.reduce((s, r) => s + (r.forks_count || 0), 0),
+            };
+          }
+
+          module.exports = { calendarWindow, fetchContributions, fetchLanguages, iso, addDays };
+          JSEOF
+          cat > scripts/city.js <<'JSEOF'
+          'use strict';
+          // Isometric "contribution city": one lot per day, one building per day with commits.
+          // Height is driven by that day's contribution count; colour follows the same scale.
+          //
+          // Rendered as a static SVG so it can be referenced straight from a README <img>.
+          // That rules out scripting, so every moving part is a CSS animation.
+
+          const { clamp, rgb, ramp, mul, mix, esc, n, rnd } = require('./util');
+
+          /* --------------------------------------------------------- geometry */
+
+          const TW = 30, TH = 15;          // tile footprint, 2:1 isometric
+          const HW = 11, HD = 5.5;         // building half-width / half-depth (inset inside the tile)
+          const MAXH = 92;                 // tallest building, in user units
+          const MINH = 5;                  // a single contribution still gets a visible plinth
+          const ROWS = 7;
+
+          const cx = (col, row, OX) => OX + (col - row) * (TW / 2);
+          const cy = (col, row, OY) => OY + (col + row) * (TH / 2);
+
+          /* ----------------------------------------------------------- themes */
+
+          const THEMES = {
+            dark: {
+              bg: '#0d0d0d', panel: '#12121a', grid: '#1e2233',
+              text: '#e6edf3', dim: '#7d8590', faint: '#30363d',
+              empty: '#161b26', emptyEdge: '#222a3a',
+              ambient: [14, 16, 30], ground: '#0a0a12',
+              stops: [
+                [0.00, [46, 35, 80]], [0.20, [76, 42, 140]], [0.40, [124, 58, 237]],
+                [0.58, [99, 102, 241]], [0.72, [56, 160, 230]], [0.86, [15, 240, 252]],
+                [1.00, [168, 255, 250]],
+              ],
+              accent: '#f59e0b', lit: '#fff3c4',
+            },
+            light: {
+              bg: '#ffffff', panel: '#f6f8fa', grid: '#d8dee4',
+              text: '#1f2328', dim: '#59636e', faint: '#d1d9e0',
+              empty: '#eaeef2', emptyEdge: '#d0d7de',
+              ambient: [236, 238, 245], ground: '#eef1f6',
+              stops: [
+                [0.00, [186, 178, 214]], [0.20, [150, 120, 220]], [0.40, [124, 58, 237]],
+                [0.58, [88, 92, 235]], [0.72, [32, 140, 214]], [0.86, [6, 190, 205]],
+                [1.00, [10, 150, 170]],
+              ],
+              accent: '#bf6a02', lit: '#fff8d8',
+            },
+          };
+
+          /* ---------------------------------------------------------- helpers */
+
+          const pt = (x, y) => `${n(x)},${n(y)}`;
+          const poly = (pts, fill, extra) =>
+            `<polygon points="${pts.map(p => pt(p[0], p[1])).join(' ')}" fill="${fill}"${extra || ''}/>`;
+
+          // Advance width of a monospace run. Every face in the stack is ~0.6em per glyph, so
+          // this is accurate enough to lay out the header without a text-measuring engine --
+          // and getting it wrong is how labels end up clipped off the canvas edge.
+          const mw = (s, size) => String(s).length * size * 0.6;
+
+          // Contribution count -> 0..1 height ratio. Raw counts are heavily skewed (a handful
+          // of huge days, a long tail of small ones), so compress with a power curve against a
+          // robust ceiling instead of the absolute max -- otherwise one 88-commit day flattens
+          // the entire rest of the city into the pavement.
+          function heightRatio(count, ceil) {
+            if (count <= 0) return 0;
+            return clamp(Math.pow(Math.min(count, ceil) / ceil, 0.62), 0, 1);
+          }
+
+          function stats(days) {
+            const total = days.reduce((s, d) => s + d.count, 0);
+            const active = days.filter(d => d.count > 0).length;
+            const best = days.reduce((m, d) => (d.count > m.count ? d : m), { count: -1, date: '' });
+
+            let longest = 0, run = 0;
+            for (const d of days) { run = d.count > 0 ? run + 1 : 0; if (run > longest) longest = run; }
+
+            // Current streak counts back from the end. Today being empty does not break it --
+            // the day is not over yet -- but any earlier gap does.
+            let current = 0;
+            for (let i = days.length - 1; i >= 0; i--) {
+              if (days[i].count > 0) current++;
+              else if (i !== days.length - 1) break;
+            }
+            return { total, active, best, longest, current };
+          }
+
+          /* ---------------------------------------------------- building body */
+
+          function building(d, col, row, OX, OY, T, ctx) {
+            const { ceil, todayISO, bestDate } = ctx;
+            const X = cx(col, row, OX), Y = cy(col, row, OY);
+            const isToday = d.date === todayISO;
+            const isBest = d.date === bestDate && d.count > 0;
+
+            const tip = `${d.count === 0 ? 'No contributions' : d.count + (d.count === 1 ? ' contribution' : ' contributions')} on ${d.date}`;
+            // <title> must be the FIRST child of the element it describes, so each day gets its
+            // own <g> wrapper. (README <img> embeds never surface these, but they work when the
+            // SVG is opened directly.)
+            const open = `<g><title>${esc(tip)}</title>`;
+
+            /* ---- empty lot: a flat plate, no massing ---- */
+            if (d.count <= 0) {
+              const plate = [[X, Y - HD], [X + HW, Y], [X, Y + HD], [X - HW, Y]];
+              return open + poly(plate, T.empty, ` stroke="${T.emptyEdge}" stroke-width=".5"`) + '</g>';
+            }
+
+            const t = heightRatio(d.count, ceil);
+            const h = MINH + (MAXH - MINH) * t;
+
+            const base = ramp(T.stops, t);
+            // Directional shading: top lit, right face mid, left face in shadow. A little
+            // ambient is mixed back in so the dark faces read as colour, not as holes.
+            const top = mix(mul(base, 1.06), [255, 255, 255], 0.10);
+            const right = mix(mul(base, 0.70), T.ambient, 0.16);
+            const left = mix(mul(base, 0.44), T.ambient, 0.26);
+
+            const topF = [[X, Y - h - HD], [X + HW, Y - h], [X, Y - h + HD], [X - HW, Y - h]];
+            const leftF = [[X - HW, Y - h], [X, Y - h + HD], [X, Y + HD], [X - HW, Y]];
+            const rightF = [[X + HW, Y - h], [X, Y - h + HD], [X, Y + HD], [X + HW, Y]];
+
+            let s = poly(leftF, rgb(left)) + poly(rightF, rgb(right)) + poly(topF, rgb(top));
+
+            /* ---- lit windows ---- */
+            // Each face is an affine patch: origin + a*along + b*down. Only lit windows are
+            // emitted; unlit ones would just repaint the face colour and double the file size.
+            if (h > 20) {
+              const floors = Math.min(7, Math.floor((h - 8) / 11));
+              const WW = 0.2, WH = 0.5;                     // window size in face-local units
+              const cols = [0.2, 0.55];
+              const faces = [
+                { o: [X, Y - h + HD], u: [-HW, -HD], lit: 0.42 },  // left face  (in shadow -> lights show more)
+                { o: [X, Y - h + HD], u: [HW, -HD], lit: 0.30 },   // right face
+              ];
+              for (const f of faces) {
+                for (let fl = 0; fl < floors; fl++) {
+                  for (const a0 of cols) {
+                    const seed = `${d.date}|${f.u[0]}|${fl}|${a0}`;
+                    if (rnd(seed) > f.lit) continue;
+                    const b0 = 0.10 + (fl * 0.86) / floors;
+                    const P = (a, b) => [
+                      f.o[0] + a * f.u[0],
+                      f.o[1] + a * f.u[1] + b * h,
+                    ];
+                    const wh = Math.min(WH / floors, 0.5);
+                    const g = [P(a0, b0), P(a0 + WW, b0 + (WW * -f.u[1]) / h), P(a0 + WW, b0 + wh + (WW * -f.u[1]) / h), P(a0, b0 + wh)];
+                    const glow = rnd(seed + '#') > 0.55 ? T.lit : rgb(mix(ramp(T.stops, Math.min(1, t + 0.25)), [255, 255, 255], 0.45));
+                    s += poly(g, glow, ' opacity=".85"');
+                  }
+                }
+              }
+            }
+
+            /* ---- crown highlight on the tallest towers ---- */
+            if (t > 0.62) {
+              s += `<polyline points="${[[X - HW, Y - h], [X, Y - h - HD], [X + HW, Y - h]].map(p => pt(p[0], p[1])).join(' ')}" fill="none" stroke="${rgb(mix(top, [255, 255, 255], 0.5))}" stroke-width=".9" opacity=".7"/>`;
+            }
+
+            /* ---- accents: personal record, and today's live beacon ---- */
+            if (isBest) {
+              s += `<polygon points="${topF.map(p => pt(p[0], p[1])).join(' ')}" fill="none" stroke="${T.accent}" stroke-width="1.3"/>`;
+              s += `<circle cx="${n(X)}" cy="${n(Y - h - HD - 5)}" r="2.4" fill="${T.accent}"/>`;
+            }
+            if (isToday) {
+              s += `<g class="today"><circle cx="${n(X)}" cy="${n(Y - h - HD - 9)}" r="3" fill="${T.accent}"/>`
+                 + `<circle cx="${n(X)}" cy="${n(Y - h - HD - 9)}" r="3" fill="none" stroke="${T.accent}" stroke-width="1.2" class="ping"/></g>`;
+              s += `<line x1="${n(X)}" y1="${n(Y - h - HD - 6)}" x2="${n(X)}" y2="${n(Y - h - HD)}" stroke="${T.accent}" stroke-width=".8" opacity=".8"/>`;
+            }
+
+            return open + s + '</g>';
+          }
+
+          /* ------------------------------------------------------------ build */
+
+          function buildCity(days, opt = {}) {
+            const T = THEMES[opt.theme === 'light' ? 'light' : 'dark'];
+            const login = opt.login || '';
+            const months = opt.months || 6;
+            const todayISO = opt.today || days[days.length - 1].date;
+            const st = stats(days);
+
+            // Robust ceiling: the 96th percentile of active days, floored at 4 so quiet
+            // accounts still get a skyline instead of a uniform slab.
+            const active = days.filter(d => d.count > 0).map(d => d.count).sort((a, b) => a - b);
+            const ceil = Math.max(4, active.length ? active[Math.min(active.length - 1, Math.floor(active.length * 0.96))] : 4);
+
+            const cols = Math.ceil(days.length / ROWS);
+            const OX = 142, TITLE = 62, OY = TITLE + MAXH + 14;
+
+            /* ---- header + chip metrics, measured up front so nothing gets clipped ---- */
+            const stamp = new Date(opt.now || Date.now()).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+            const liveTxt = `LIVE · ${stamp}`;
+            const titleTxt = 'Contribution City';
+            const subTxt = `last ${months} months${login ? ' · @' + login : ''}`;
+
+            const chips = [
+              [st.total.toLocaleString('en-US'), 'contributions'],
+              [String(st.active), 'active days'],
+              [String(st.best.count), 'best day'],
+              [String(st.current), 'day streak'],
+              [String(st.longest), 'longest streak'],
+            ];
+            // The key line is uppercase with .5px tracking, so add that back per glyph.
+            const chipW = chips.map(([v, k]) =>
+              Math.max(mw(v, 12), mw(k, 5.6) + k.length * 0.5) + 14);
+            const chipsW = chipW.reduce((s, w) => s + w + 8, 0) - 8;
+
+            // Weekday labels ride just off the front-right edge. That side is the only one that
+            // is provably never occluded: a label at column (cols-1+k) always lands below the
+            // base of any building that shares its x, and buildings only ever extend upward.
+            const WDAYS = [[1, 'Mon'], [3, 'Wed'], [5, 'Fri']];
+            const WD_COL = cols - 1 + 1.3;
+            const wdRight = Math.max(...WDAYS.map(([row, name]) => cx(WD_COL, row, OX) + mw(name, 8.5)));
+
+            const W = Math.max(
+              OX + cols * (TW / 2) + 22,                                                    // the grid
+              wdRight + 14,                                                                 // weekday labels
+              20 + mw(titleTxt, 15) + 16 + mw(subTxt, 9) + 26 + 12 + mw(liveTxt, 9) + 20,   // header row
+              20 + chipsW + 20);                                                            // chip row
+            const H = OY + (cols - 1 + ROWS) * (TH / 2) + TH + 40;
+
+            /* ---- painter's algorithm: depth is (col + row); draw far cells first ---- */
+            const cells = days.map((d, i) => ({ d, col: Math.floor(i / ROWS), row: i % ROWS }));
+            cells.sort((a, b) => (a.col + a.row) - (b.col + b.row) || a.col - b.col);
+
+            let body = '';
+            let lastDepth = -1, group = '';
+            for (const c of cells) {
+              const depth = c.col + c.row;
+              if (depth !== lastDepth) {
+                if (group) body += `<g class="w" style="animation-delay:${n(lastDepth * 0.022, 3)}s">${group}</g>`;
+                group = ''; lastDepth = depth;
+              }
+              group += building(c.d, c.col, c.row, OX, OY, T, { ceil, todayISO, bestDate: st.best.date });
+            }
+            if (group) body += `<g class="w" style="animation-delay:${n(lastDepth * 0.022, 3)}s">${group}</g>`;
+
+            /* ---- month labels along the front-right edge ---- */
+            let months_ = '';
+            let seenMonth = '';
+            for (let col = 0; col < cols; col++) {
+              const d = days[col * ROWS];
+              if (!d) continue;
+              const m = d.date.slice(0, 7);
+              if (m === seenMonth) continue;
+              seenMonth = m;
+              if (col === 0 && +d.date.slice(8) > 21) continue;   // partial leading month, skip
+              const name = new Date(d.date + 'T00:00:00Z').toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+              months_ += `<text x="${n(cx(col, 7.6, OX))}" y="${n(cy(col, 7.6, OY) + 3)}" class="lbl">${name}</text>`;
+            }
+
+            /* ---- weekday labels off the front-right edge ---- */
+            let wd = '';
+            for (const [row, name] of WDAYS) {
+              wd += `<text x="${n(cx(WD_COL, row, OX))}" y="${n(cy(WD_COL, row, OY) + 3)}" class="lbl">${name}</text>`;
+            }
+
+            /* ---- stat chips ---- */
+            let chipS = '';
+            let cxp = 20;
+            chips.forEach(([v, k], ci) => {
+              const w = chipW[ci];
+              chipS += `<g transform="translate(${n(cxp)},34)">`
+                + `<rect x="0" y="0" width="${n(w)}" height="26" rx="5" fill="${T.panel}" stroke="${T.faint}" stroke-width=".8"/>`
+                + `<text x="7" y="12" class="chipv">${esc(v)}</text>`
+                + `<text x="7" y="21" class="chipk">${esc(k.toUpperCase())}</text></g>`;
+              cxp += w + 8;
+            });
+
+            /* ---- height legend ---- */
+            const legX = W - 132, legY = H - 26;
+            let legend = `<text x="${n(legX - 6)}" y="${n(legY + 9)}" class="lbl" text-anchor="end">less</text>`;
+            for (let i = 0; i < 6; i++) {
+              const t = i / 5, hh = 3 + 11 * t;
+              const b = ramp(T.stops, t);
+              const x = legX + i * 16;
+              legend += poly([[x, legY + 12 - hh], [x + 7, legY + 12 - hh + 3.5], [x, legY + 12 - hh + 7], [x - 7, legY + 12 - hh + 3.5]], rgb(mix(mul(b, 1.06), [255, 255, 255], 0.1)));
+              legend += poly([[x - 7, legY + 12 - hh + 3.5], [x, legY + 12 - hh + 7], [x, legY + 12], [x - 7, legY + 12 - 3.5]], rgb(mul(b, 0.44)));
+              legend += poly([[x + 7, legY + 12 - hh + 3.5], [x, legY + 12 - hh + 7], [x, legY + 12], [x + 7, legY + 12 - 3.5]], rgb(mul(b, 0.70)));
+            }
+            legend += `<text x="${n(legX + 5 * 16 + 12)}" y="${n(legY + 9)}" class="lbl">more</text>`;
+
+            const css = `
+          .lbl{font:600 8.5px ${'"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace'};fill:${T.dim}}
+          .h1{font:700 15px ${'"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace'};fill:${T.text}}
+          .h2{font:500 9px ${'"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace'};fill:${T.dim}}
+          .chipv{font:700 12px ${'"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace'};fill:${T.text}}
+          .chipk{font:600 5.6px ${'"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace'};fill:${T.dim};letter-spacing:.5px}
+          /* The reveal deliberately animates transform only, never opacity. 'both' holds the
+             from-state whenever the animation is not actively playing, so an opacity:0 keyframe
+             would blank every building on any renderer that parses the CSS but never ticks the
+             animation (static rasterisers, thumbnailers, print). Worst case here is a 16px
+             offset, which is imperceptible -- the city is always visible. */
+          @keyframes rise{from{transform:translateY(16px)}to{transform:translateY(0)}}
+          .w{animation:rise .55s cubic-bezier(.22,.9,.3,1) both}
+          @keyframes ping{0%{r:3;opacity:.9}70%,100%{r:11;opacity:0}}
+          .ping{animation:ping 2.1s ease-out infinite}
+          @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+          .live{animation:blink 1.7s ease-in-out infinite}
+          @media(prefers-reduced-motion:reduce){.w{animation:none}.ping{display:none}.live{animation:none}}`;
+
+            const liveX = W - 20 - mw(liveTxt, 9);
+
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="${n(W)}" height="${n(H)}" viewBox="0 0 ${n(W)} ${n(H)}" role="img" aria-label="${esc(`Isometric city of ${login} GitHub contributions over the last ${months} months: ${st.total} contributions across ${st.active} active days, best day ${st.best.count} on ${st.best.date}, current streak ${st.current} days`)}">`
+              + `<style>${css}</style>`
+              + `<rect width="${n(W)}" height="${n(H)}" rx="10" fill="${T.bg}"/>`
+              + `<text x="20" y="22" class="h1">${esc(titleTxt)}</text>`
+              + `<text x="${n(20 + mw(titleTxt, 15) + 16)}" y="22" class="h2">${esc(subTxt)}</text>`
+              + `<g class="live"><circle cx="${n(liveX - 9)}" cy="18" r="3" fill="${T.accent}"/></g>`
+              + `<text x="${n(liveX)}" y="21" class="h2">${esc(liveTxt)}</text>`
+              + chipS
+              + body
+              + `<g>${months_}${wd}</g>`   // axis labels last, so no tower paints over them
+              + legend
+              + `</svg>\n`;
+          }
+
+          module.exports = { buildCity, stats, THEMES };
+          JSEOF
+          cat > scripts/radar.js <<'JSEOF'
+          'use strict';
+          // Language radar drawn as a spider web.
+          //
+          // Both series are measured from the GitHub API -- nothing is hand-rated:
+          //   filled  = share of total code bytes written in that language  ("how much")
+          //   outline = share of repositories that contain it               ("how broadly")
+          //
+          // Values are square-rooted before plotting. A linear radar on this data is a single
+          // spike (the top language is ~70% of all bytes) and everything else vanishes.
+
+          const { clamp, rgb, ramp, mix, esc, n } = require('./util');
+
+          const THEMES = {
+            dark: {
+              bg: '#0d0d0d', web: '#252b3a', webIn: '#1b2130', text: '#e6edf3', dim: '#7d8590',
+              faint: '#30363d', bytes: '#0ff0fc', repos: '#f59e0b', spider: '#8b93a7',
+            },
+            light: {
+              bg: '#ffffff', web: '#d0d7de', webIn: '#e4e8ee', text: '#1f2328', dim: '#59636e',
+              faint: '#d1d9e0', bytes: '#0a8f9c', repos: '#bf6a02', spider: '#6e7781',
+            },
+          };
+
+          // Canonical GitHub language colours for the axis dots, with a neutral fallback.
+          const LANG_COLOR = {
+            PHP: '#4F5D95', HTML: '#e34c26', CSS: '#663399', Java: '#b07219',
+            JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5',
+            'Visual Basic .NET': '#945db7', Hack: '#878787', Batchfile: '#C1F12E',
+            Shell: '#89e051', Dockerfile: '#384d54', C: '#555555', 'C++': '#f34b7d',
+            'C#': '#178600', Ruby: '#701516', Go: '#00ADD8', Rust: '#dea584',
+            Kotlin: '#A97BFF', Swift: '#F05138', Vue: '#41b883', SCSS: '#c6538c',
+            Makefile: '#427819', Jupyter: '#DA5B0B', Blade: '#f7523f', Twig: '#c1d026',
+          };
+
+          // Linguist uses some very long display names that blow past the canvas edge when
+          // used as radar axis labels. Only the label is shortened; tooltips/aria keep the
+          // real name.
+          const SHORT_NAME = {
+            'Visual Basic .NET': 'VB.NET',
+            'Visual Basic 6.0': 'VB6',
+            'Jupyter Notebook': 'Jupyter',
+            'Objective-C': 'Obj-C',
+            'Emacs Lisp': 'E-Lisp',
+            'Rich Text Format': 'RTF',
+            'ASP.NET': 'ASP.NET',
+          };
+          const short = s => SHORT_NAME[s] || s;
+
+          const MONO = '"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace';
+          const pt = (p) => `${n(p[0])},${n(p[1])}`;
+          const mw = (s, size) => String(s).length * size * 0.6;
+
+          const bytesHuman = b =>
+            b >= 1 << 30 ? (b / (1 << 30)).toFixed(1) + ' GB'
+              : b >= 1 << 20 ? (b / (1 << 20)).toFixed(1) + ' MB'
+                : b >= 1 << 10 ? (b / (1 << 10)).toFixed(0) + ' KB' : b + ' B';
+
+          // A web strand that sags inward between two vertices, the way a real orb web does.
+          function strand(a, b, cxy, sag) {
+            const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
+            const q = [cxy[0] + (mx - cxy[0]) * sag, cxy[1] + (my - cxy[1]) * sag];
+            return `M${pt(a)}Q${pt(q)} ${pt(b)}`;
+          }
+
+          function spider(x, y, s, fill) {
+            let legs = '';
+            for (let i = 0; i < 8; i++) {
+              const side = i < 4 ? -1 : 1;
+              const k = i % 4;
+              const spread = (0.55 + k * 0.42) * s * 2.1;
+              const drop = (k === 0 || k === 3 ? 1.15 : 0.45) * s;
+              const knee = [x + side * spread * 0.55, y - s * 0.9 + (k - 1.4) * s * 0.5];
+              legs += `<path d="M${n(x + side * s * 0.5)},${n(y)}Q${pt(knee)} ${n(x + side * spread)},${n(y + drop)}" fill="none" stroke="${fill}" stroke-width="${n(s * 0.17, 2)}" stroke-linecap="round"/>`;
+            }
+            return `<g opacity=".85">${legs}`
+              + `<ellipse cx="${n(x)}" cy="${n(y + s * 0.5)}" rx="${n(s * 0.78)}" ry="${n(s * 0.95)}" fill="${fill}"/>`
+              + `<circle cx="${n(x)}" cy="${n(y - s * 0.7)}" r="${n(s * 0.5)}" fill="${fill}"/></g>`;
+          }
+
+          function buildRadar(lang, opt = {}) {
+            const T = THEMES[opt.theme === 'light' ? 'light' : 'dark'];
+            const AXES = opt.axes || 6;
+
+            const totalBytes = Object.values(lang.bytes).reduce((a, b) => a + b, 0) || 1;
+            const ranked = Object.entries(lang.bytes).sort((a, b) => b[1] - a[1]);
+            const axes = ranked.slice(0, AXES).map(([name, b]) => ({
+              name,
+              byteShare: b / totalBytes,
+              repoShare: (lang.repoCount[name] || 0) / Math.max(1, lang.repos),
+              repos: lang.repoCount[name] || 0,
+              color: LANG_COLOR[name] || T.dim,
+            }));
+            const N = axes.length;
+            if (N < 3) throw new Error('radar needs at least 3 languages, got ' + N);
+
+            const maxByte = Math.max(...axes.map(a => a.byteShare));
+            const maxRepo = Math.max(...axes.map(a => a.repoShare), 1e-6);
+            const norm = (v, m) => clamp(Math.sqrt(v / m), 0, 1);
+
+            // Widen the canvas if the side labels need it, so a long language name can never
+            // be clipped at the edge.
+            const R = 118;
+            const sideLabel = Math.max(0, ...axes.map((a, i) => {
+              const c = Math.cos((-90 + (i * 360) / N) * Math.PI / 180);
+              if (Math.abs(c) <= 0.3) return 0;   // top/bottom labels are centred, not side-anchored
+              return Math.max(mw(short(a.name), 10), mw(`${(a.byteShare * 100).toFixed(1)}% · ${a.repos} repos`, 7.5));
+            }));
+            const halfW = Math.max(235, R + 26 + sideLabel + 16);
+            const legendW = 20 + mw('Language Web', 14) + 24 + 18 + mw('share of repos', 8) + 20;
+            const W = Math.max(halfW * 2, legendW), H = 418;
+            const CX = W / 2, CY = 226;
+            const ang = i => (-90 + (i * 360) / N) * Math.PI / 180;
+            const at = (i, r) => [CX + Math.cos(ang(i)) * r, CY + Math.sin(ang(i)) * r];
+
+            /* ---- the web itself: rings of sagging strands + radial spokes ---- */
+            const RINGS = [0.25, 0.5, 0.75, 1];
+            let web = '';
+            for (const g of RINGS) {
+              let d = '';
+              for (let i = 0; i < N; i++) d += strand(at(i, R * g), at((i + 1) % N, R * g), [CX, CY], 0.9);
+              web += `<path d="${d}" fill="none" stroke="${g === 1 ? T.web : T.webIn}" stroke-width="${g === 1 ? 1.1 : 0.7}"/>`;
+            }
+            // Extra fine strands between the main rings, so the web reads as woven rather than
+            // as a plain grid.
+            let fine = '';
+            for (const g of [0.375, 0.625, 0.875]) {
+              for (let i = 0; i < N; i++) fine += strand(at(i, R * g), at((i + 1) % N, R * g), [CX, CY], 0.9);
+            }
+            web += `<path d="${fine}" fill="none" stroke="${T.webIn}" stroke-width=".4" opacity=".7"/>`;
+
+            let spokes = '';
+            for (let i = 0; i < N; i++) spokes += `M${n(CX)},${n(CY)}L${pt(at(i, R))}`;
+            // Anchor threads reaching past the outer ring, as if pinned to the frame.
+            for (let i = 0; i < N; i++) spokes += `M${pt(at(i, R))}L${pt(at(i, R + 13))}`;
+            web += `<path d="${spokes}" fill="none" stroke="${T.web}" stroke-width=".7"/>`;
+
+            /* ---- series ---- */
+            const ptsByte = axes.map((a, i) => at(i, R * norm(a.byteShare, maxByte)));
+            const ptsRepo = axes.map((a, i) => at(i, R * norm(a.repoShare, maxRepo)));
+
+            const series =
+              `<polygon points="${ptsRepo.map(pt).join(' ')}" fill="none" stroke="${T.repos}" stroke-width="1.6" stroke-dasharray="4 3" opacity=".95"/>`
+              + `<polygon points="${ptsByte.map(pt).join(' ')}" fill="${T.bytes}" fill-opacity=".2" stroke="${T.bytes}" stroke-width="2" class="grow"/>`
+              + ptsRepo.map(p => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="2" fill="${T.repos}"/>`).join('')
+              + ptsByte.map((p, i) => `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="3.1" fill="${T.bg}" stroke="${T.bytes}" stroke-width="1.6"/>`).join('');
+
+            /* ---- axis labels ---- */
+            let labels = '';
+            axes.forEach((a, i) => {
+              const [lx, ly] = at(i, R + 26);
+              const c = Math.cos(ang(i));
+              const anchor = c > 0.3 ? 'start' : c < -0.3 ? 'end' : 'middle';
+              const dotX = anchor === 'start' ? lx - 7 : anchor === 'end' ? lx + 7 : lx;
+              const name = short(a.name);
+              labels += `<circle cx="${n(dotX)}" cy="${n(ly - 3)}" r="2.6" fill="${a.color}"/>`
+                + `<text x="${n(lx)}" y="${n(ly)}" class="ax" text-anchor="${anchor}"><title>${esc(a.name)}</title>${esc(name)}</text>`
+                + `<text x="${n(lx)}" y="${n(ly + 10)}" class="axv" text-anchor="${anchor}">${(a.byteShare * 100).toFixed(1)}% · ${a.repos} repo${a.repos === 1 ? '' : 's'}</text>`;
+            });
+
+            // Parked on the web between the two lower-left axes, clear of both data polygons.
+            const spiderA = Math.PI, spiderR = R * 0.82;
+            const spiderG = spider(CX + Math.cos(spiderA) * spiderR, CY + Math.sin(spiderA) * spiderR, 5.2, T.spider);
+
+            const others = ranked.length - N;
+            const footer = `${bytesHuman(totalBytes)} of code · ${ranked.length} languages · ${lang.repos} repos · ${lang.stars} stars`
+              + (others > 0 ? ` · +${others} minor` : '');
+
+            const css = `
+          .ax{font:700 10px ${MONO};fill:${T.text}}
+          .axv{font:600 7.5px ${MONO};fill:${T.dim}}
+          .h1{font:700 14px ${MONO};fill:${T.text}}
+          .h2{font:500 8.5px ${MONO};fill:${T.dim}}
+          .lg{font:600 8px ${MONO};fill:${T.dim}}
+          .ft{font:500 8px ${MONO};fill:${T.dim}}
+          @keyframes grow{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+          .grow{animation:grow .8s cubic-bezier(.2,.9,.3,1) both;transform-origin:${n(CX)}px ${n(CY)}px}
+          @keyframes sway{0%,100%{transform:translateY(0)}50%{transform:translateY(2.5px)}}
+          .sw{animation:sway 4.5s ease-in-out infinite}
+          @media(prefers-reduced-motion:reduce){.grow,.sw{animation:none}}`;
+
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc('Language web: ' + axes.map(a => `${a.name} ${(a.byteShare * 100).toFixed(1)}% of code in ${a.repos} repos`).join(', '))}">`
+              + `<style>${css}</style>`
+              + `<rect width="${W}" height="${H}" rx="10" fill="${T.bg}"/>`
+              + `<text x="20" y="24" class="h1">Language Web</text>`
+              + `<text x="20" y="38" class="h2">measured from ${lang.repos} public repositories</text>`
+              // legend
+              + `<g transform="translate(${W - 148},18)">`
+              + `<rect x="0" y="0" width="12" height="8" rx="2" fill="${T.bytes}" fill-opacity=".28" stroke="${T.bytes}" stroke-width="1.4"/>`
+              + `<text x="18" y="7" class="lg">share of code</text>`
+              + `<line x1="0" y1="18" x2="12" y2="18" stroke="${T.repos}" stroke-width="1.6" stroke-dasharray="4 3"/>`
+              + `<text x="18" y="21" class="lg">share of repos</text></g>`
+              + `<g class="sw">${web}${spiderG}</g>`
+              + series
+              + labels
+              + `<text x="${n(CX)}" y="${H - 14}" class="ft" text-anchor="middle">${esc(footer)}</text>`
+              + `<text x="${n(CX)}" y="${H - 4}" class="ft" text-anchor="middle" opacity=".65">radii use a square-root scale</text>`
+              + `</svg>\n`;
+          }
+
+          module.exports = { buildRadar, LANG_COLOR };
+          JSEOF
+          cat > scripts/md.js <<'JSEOF'
+          'use strict';
+          // Emits the static README block: the isometric contribution city and the language web,
+          // each as one theme-aware <picture>. Both SVGs carry their own header text, stat chips
+          // and legends, so this markdown never changes between runs -- it holds only image URLs.
+          // That means it can be pasted into the profile README once and left alone; the workflow
+          // republishes the images, not the README.
+          //
+          // Each picture is wrapped in an <a href> to the raw SVG. A README <img> gets no pointer
+          // events, so its per-building <title> tooltips never show -- but clicking through opens
+          // the SVG as a document, where the tooltips do work. GitHub keeps the anchor (verified
+          // against its markdown API), so the click-through is a real feature, not decoration.
+
+          function buildMarkdown(data, opt = {}) {
+            const { login } = data;
+            const base = opt.base || `https://raw.githubusercontent.com/${login}/${login}/visuals/`;
+            const months = data.months;
+
+            const city = (theme) => `${base}commit-city-${theme}.svg`;
+            const web = (theme) => `${base}language-web-${theme}.svg`;
+
+            return `<!-- VISUALS:START — generated by .github/workflows/visuals.yml, do not edit by hand -->
+
+          ## 🏙️ Contribution City
+
+          <div align="center">
+
+          <i>Every day of the last ${months} months is a city block — the taller the tower, the harder that day went. Click the skyline to open it full-size, where each building shows its exact count and date on hover.</i>
+
+          <a href="${city('dark')}">
+            <picture>
+              <source media="(prefers-color-scheme: dark)" srcset="${city('dark')}">
+              <source media="(prefers-color-scheme: light)" srcset="${city('light')}">
+              <img alt="Isometric city of my GitHub contributions over the last ${months} months — building height is that day's contribution count" src="${city('dark')}">
+            </picture>
+          </a>
+
+          <sub>🟡 gold ring = personal record day · 🟠 pulsing beacon = today · rebuilt from live GitHub data every 2 hours</sub>
+
+          </div>
+
+          ## 🕸️ Language Web
+
+          <div align="center">
+
+          <i>Not a self-rating — both rings are measured from my public repositories.</i>
+
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="${web('dark')}">
+            <source media="(prefers-color-scheme: light)" srcset="${web('light')}">
+            <img alt="Language web: share of code bytes versus share of repositories, per language" src="${web('dark')}">
+          </picture>
+
+          <sub>🔵 filled = share of code written · 🟠 dashed = share of repos it appears in · radii use a square-root scale</sub>
+
+          </div>
+
+          <!-- VISUALS:END -->
+          `;
+          }
+
+          module.exports = { buildMarkdown };
+          JSEOF
+          cat > scripts/build.js <<'JSEOF'
+          'use strict';
+          // Entry point. Fetches live GitHub data and writes the four SVGs into dist/.
+          //
+          //   node scripts/build.js                 # fetch fresh
+          //   node scripts/build.js --cache         # reuse .cache/data.json if present
+          //
+          // Env: GH_LOGIN (required), GITHUB_TOKEN (optional but recommended), MONTHS (default 6)
+
+          const fs = require('fs');
+          const path = require('path');
+          const { calendarWindow, fetchContributions, fetchLanguages } = require('./gh-data');
+          const { buildCity } = require('./city');
+          const { buildRadar } = require('./radar');
+          const { buildMarkdown } = require('./md');
+
+          const LOGIN = process.env.GH_LOGIN || 'avirajsalunkhe';
+          const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || '';
+          const MONTHS = +(process.env.MONTHS || 6);
+          const OUT = path.resolve(__dirname, '..', 'dist');
+          const CACHE = path.resolve(__dirname, '..', '.cache', 'data.json');
+          const useCache = process.argv.includes('--cache');
+
+          async function load() {
+            if (useCache && fs.existsSync(CACHE)) {
+              console.log('· using cached data (' + CACHE + ')');
+              return JSON.parse(fs.readFileSync(CACHE, 'utf8'));
+            }
+            const { from, to } = calendarWindow(MONTHS);
+            console.log(`· contributions ${from} -> ${to} for @${LOGIN}${TOKEN ? ' (token)' : ' (anonymous)'}`);
+            const { days, via } = await fetchContributions(LOGIN, TOKEN, from, to);
+            console.log(`  ${days.length} days via ${via}`);
+
+            console.log('· languages');
+            const lang = await fetchLanguages(LOGIN, TOKEN);
+            console.log(`  ${Object.keys(lang.bytes).length} languages across ${lang.repos} repos`);
+
+            const data = { login: LOGIN, months: MONTHS, from, to, days, lang, fetchedAt: new Date().toISOString() };
+            fs.mkdirSync(path.dirname(CACHE), { recursive: true });
+            fs.writeFileSync(CACHE, JSON.stringify(data));
+            return data;
+          }
+
+          (async () => {
+            const data = await load();
+            fs.mkdirSync(OUT, { recursive: true });
+
+            const now = Date.parse(data.fetchedAt) || Date.now();
+            const files = {};
+
+            // The city carries its own header, stat chips and legend inside the SVG, so the
+            // markdown block below is static -- it only ever holds image URLs.
+            for (const theme of ['dark', 'light']) {
+              files[`commit-city-${theme}.svg`] = buildCity(data.days, {
+                theme, months: data.months, login: data.login, now,
+              });
+              files[`language-web-${theme}.svg`] = buildRadar(data.lang, { theme });
+            }
+            files['city-block.md'] = buildMarkdown(data);
+
+            let bytes = 0;
+            for (const [name, body] of Object.entries(files)) {
+              fs.writeFileSync(path.join(OUT, name), body);
+              bytes += Buffer.byteLength(body);
+            }
+
+            for (const k of Object.keys(files)) {
+              console.log(`  ${k.padEnd(24)} ${(Buffer.byteLength(files[k]) / 1024).toFixed(1)} KB`);
+            }
+            console.log(`· wrote ${Object.keys(files).length} files (${(bytes / 1024).toFixed(0)} KB) to ${OUT}`);
+          })().catch(e => { console.error('\nbuild failed: ' + e.message); process.exit(1); });
+          JSEOF
+          ls -la scripts
+
+      - name: Generate visuals
+        env:
+          GH_LOGIN: ${{ github.repository_owner }}
+          MONTHS: '6'
+          # GH_PAT is optional. The default GITHUB_TOKEN reads the public contribution
+          # calendar; a PAT with read:user also counts private contributions. Falls back
+          # automatically when the secret is absent.
+          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+        run: node scripts/build.js
+
+      - name: Verify output
+        run: |
+          set -e
+          for f in commit-city-dark commit-city-light language-web-dark language-web-light; do
+            test -s "dist/$f.svg" || { echo "missing or empty: dist/$f.svg"; exit 1; }
+            head -c 5 "dist/$f.svg" | grep -q '<svg' || { echo "not an svg: dist/$f.svg"; exit 1; }
+            # A truncated SVG still starts with <svg but renders as nothing, so confirm
+            # the document actually closes.
+            tail -c 20 "dist/$f.svg" | grep -q '</svg>' || { echo "truncated svg: dist/$f.svg"; exit 1; }
+          done
+          # The city must contain buildings, not just the chrome. If the API handed back
+          # an empty calendar, fail loud rather than publish an empty plaza over a good one.
+          polys=$(grep -o '<polygon' dist/commit-city-dark.svg | wc -l)
+          test "$polys" -gt 200 || { echo "city looks empty ($polys polygons)"; exit 1; }
+          echo "- city has $polys polygons"
+          ls -la dist
+
+      - name: Publish images to visuals branch
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: visuals
+          build_dir: dist
+          keep_history: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
