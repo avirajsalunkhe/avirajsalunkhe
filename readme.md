@@ -28,7 +28,7 @@
 <!--                       WHO I AM                                 -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
 
-<img align="right" alt="Coding GIF" width="360" src="https://user-images.githubusercontent.com/74038190/215282960-1126c81a-ed66-464a-b7d7-a111f71aa7ab.jpg"/>
+<img align="right" alt="Coding GIF" width="360" src="https://user-images.githubusercontent.com/74038190/214375888-0dc62524-fb43-43fd-9479-098b471d1b9c.gif"/>
 
 ### 👨‍💻 Who I Am
 
