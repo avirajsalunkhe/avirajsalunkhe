@@ -81,7 +81,7 @@ fun_fact: I debug with coffee ☕
 <div align="center">
 
 ## 📈 Contribution Activity Graph
-<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=7c3aed&bgColour=0d0d0d&dotColour=f59e0b&days=365" alt="365 Days Contribution Graph" width="100%"/>
+<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=7c3aed&bgColour=0d0d0d&dotColour=f59e0b&days=100" alt="100 Days Contribution Graph" width="100%"/>
 
 </div>
 
