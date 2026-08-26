@@ -84,7 +84,7 @@ fun_fact: I debug with coffee ☕
 
 ![Commits](https://img.shields.io/badge/status-online-00f0ff?style=for-the-badge&logo=github&logoColor=white&labelColor=0a0a12)
 
-<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=00f0ff&bgColour=0a0a12&dotColour=ff00e6&days=365&borderRadius=12" alt="Aviraj's Contribution Graph" width="100%"/>
+<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=00f0ff&bgColour=0a0a12&dotColour=ff00e6&days=45&borderRadius=12" alt="Aviraj's Contribution Graph" width="100%"/>
 
 </div>
 
