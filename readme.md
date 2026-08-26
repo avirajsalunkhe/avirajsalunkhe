@@ -80,8 +80,11 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <div align="center">
 
-## 📈 Contribution Activity Graph
-<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=7c3aed&bgColour=0d0d0d&dotColour=f59e0b&days=45" alt="45 Days Contribution Graph" width="100%"/>
+## ⚡ Contribution Activity
+
+![Commits](https://img.shields.io/badge/status-online-00f0ff?style=for-the-badge&logo=github&logoColor=white&labelColor=0a0a12)
+
+<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=00f0ff&bgColour=0a0a12&dotColour=ff00e6&days=365&borderRadius=12" alt="Aviraj's Contribution Graph" width="100%"/>
 
 </div>
 
