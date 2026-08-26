@@ -81,7 +81,7 @@ fun_fact: I debug with coffee ☕
 <div align="center">
 
 ## 📈 Contribution Activity Graph
-<img src="https://ClassCrew.vercel.app/graph?username=avirajsalunkhe&bg_color=0d0d0d&color=0ff0fc&line=7c3aed&point=f59e0b&area=true&area_color=7c3aed&hide_border=true&custom_title=Aviraj%27s%20Contribution%20Graph" alt="Contribution Graph" width="100%"/>
+<img src="https://ghchart.rshah.org/7c3aed/avirajsalunkhe" alt="Aviraj's Contribution Graph" width="100%"/>
 
 </div>
 
