@@ -120,8 +120,6 @@ fun_fact: I debug with coffee ☕
 <p align="center">
   <img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/trophy.svg" alt="GitHub Trophies" />
 </p>
-<p align="center"><sub>Generated daily by a GitHub Action in this repo (see <code>.github/workflows/trophy.yml</code>) — no dependency on a live third-party server.</sub></p>
-
 ---
 
 
