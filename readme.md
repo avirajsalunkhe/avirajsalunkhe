@@ -106,13 +106,7 @@ fun_fact: I debug with coffee ☕
 
 
 ---
-
-### 🚀 LeetCode Stats
-
-<p align="center">
-  <img src="https://github-readme-leetcode-card.romitsagu.com/Avisalunkhe?theme=dark&show=graph" alt="Aviraj's LeetCode Stats (with global rank)" />
-</p>
-
+<p align="center"> <img src="https://github-readme-leetcode-card.romitsagu.com/Avisalunkhe?theme=dark&show=graph" alt="Aviraj's LeetCode Stats (with global rank)" /> </p> <p align="center"> <img src="https://leetcode-badge-showcase.vercel.app/api?username=Avisalunkhe&theme=dark" alt="Aviraj's LeetCode Badges" /> </p> <p align="center"> <img src="https://leetcard.jacoblin.cool/Avisalunkhe?theme=dark&font=baloo2&ext=heatmap" alt="Aviraj's LeetCode Stats" /> </p>
 ---
 
 ### 🏆 GitHub Trophies
