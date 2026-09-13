@@ -106,6 +106,7 @@ fun_fact: I debug with coffee ☕
 
 
 ---
+## 📊 LeetCode Stats
 <p align="center"> 
   <img src="https://leetcard.jacoblin.cool/Avisalunkhe?theme=dark&font=baloo2&ext=heatmap" alt="Aviraj's LeetCode Stats" /> 
 </p>
