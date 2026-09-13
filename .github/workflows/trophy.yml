@@ -16,7 +16,7 @@ jobs:
       - name: Generate trophy card
         uses: soulteary/github-profile-trophy-action@v1.1.0
         with:
-          options: 'username=avirajsalunkhe&theme=nord&column=4&margin-w=15&margin-h=15&no-bg=true'
+          options: 'username=avirajsalunkhe&theme=matrix&column=4&margin-w=15&margin-h=15&no-bg=true'
           path: trophy.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
