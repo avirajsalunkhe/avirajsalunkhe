@@ -128,9 +128,9 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  ACTIVITY GRAPH                                -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
 
 ## ⚡ Contribution Activity
+<div align="center">
 
 ![Commits](https://img.shields.io/badge/status-online-00f0ff?style=for-the-badge&logo=github&logoColor=white&labelColor=0a0a12)
 
