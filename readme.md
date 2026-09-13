@@ -96,9 +96,9 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  STREAK STATS                                  -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
+## 🔥 Daily Streak & Max Streak
 <div align="center">
 
-## 🔥 Daily Streak & Max Streak
 
 <img src="https://github-readme-streak-stats-eight.vercel.app?user=avirajsalunkhe&theme=dark"/>
 
