@@ -1,30 +1,29 @@
-name: Generate GitHub Trophies
+name: Update README trophy
 on:
   schedule:
     - cron: "0 0 * * *"   # runs once a day at midnight UTC
   workflow_dispatch:        # lets you trigger it manually from the Actions tab
 
+permissions:
+  contents: write
+
 jobs:
-  update-trophies:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Generate trophy image
-        uses: ryo-ma/github-profile-trophy@main
+      - name: Generate trophy card
+        uses: soulteary/github-profile-trophy-action@v1.1.0
         with:
-          username: avirajsalunkhe
-          theme: radical
-          column: 4
-          margin-w: 8
-          margin-h: 8
-          outputPath: 'trophy.svg'
+          options: 'username=avirajsalunkhe&theme=radical&column=4&margin-w=8&margin-h=8'
+          path: trophy.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit and push
+      - name: Commit trophy card
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add trophy.svg
-          git diff --staged --quiet || git commit -m 'Update trophy.svg'
+          git commit -m "Update README trophy" || echo "No changes to commit"
           git push
