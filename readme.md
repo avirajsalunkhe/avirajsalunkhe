@@ -112,6 +112,7 @@ fun_fact: I debug with coffee ☕
 <p align="center"> 
   <img src="https://leetcode-badge-showcase.vercel.app/api?username=Avisalunkhe&theme=dark" alt="Aviraj's LeetCode Badges" />
 </p>
+
 ---
 
 ### 🏆 GitHub Trophies
@@ -119,6 +120,7 @@ fun_fact: I debug with coffee ☕
 <p align="center">
   <img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/trophy.svg" alt="GitHub Trophies" />
 </p>
+
 ---
 
 
