@@ -266,9 +266,9 @@ fun_fact: I debug with coffee ☕
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                  SNAKE ANIMATION                               -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
-<div align="center">
 
 ## 🐍 Contribution Snake
+<div align="center">
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/output/github-snake-dark.svg"/>
