@@ -1,14 +1,3 @@
-<h1 align="center">Hi 👋, I'm Aviraj Salunkhe</h1>
-<h3 align="center">A passionate developer who loves solving problems on LeetCode</h3>
-
-<p align="center">
-  <a href="https://github.com/avirajsalunkhe">
-    <img src="https://komarev.com/ghpvc/?username=avirajsalunkhe&label=Profile%20Views&color=0e75b6&style=flat" alt="profile views" />
-  </a>
-  <a href="https://leetcode.com/u/Avisalunkhe/">
-    <img src="https://img.shields.io/badge/LeetCode-Avisalunkhe-orange?logo=leetcode&logoColor=white" alt="leetcode" />
-  </a>
-</p>
 
 ---
 
@@ -16,23 +5,6 @@
 
 <p align="center">
   <img src="https://github-readme-leetcode-card.romitsagu.com/Avisalunkhe?theme=dark&show=graph" alt="Aviraj's LeetCode Stats (with global rank)" />
-</p>
-
-<p align="center">
-  <img src="https://leetcard.jacoblin.cool/Avisalunkhe?theme=dark&font=baloo2&ext=heatmap" alt="Aviraj's LeetCode Stats" />
-</p>
-
----
-
-### 📊 GitHub Stats
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=avirajsalunkhe&show_icons=true&theme=radical&count_private=true" alt="GitHub Stats" height="165" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=avirajsalunkhe&theme=radical" alt="GitHub Streak" height="165" />
-</p>
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=avirajsalunkhe&layout=compact&theme=radical" alt="Top Languages" />
 </p>
 
 ---
@@ -45,25 +17,6 @@
 <p align="center"><sub>Generated daily by a GitHub Action in this repo (see <code>.github/workflows/trophy.yml</code>) — no dependency on a live third-party server.</sub></p>
 
 ---
-
-### 🔗 Connect with me
-
-<p align="center">
-  <a href="https://leetcode.com/u/Avisalunkhe/">
-    <img src="https://img.shields.io/badge/LeetCode-000000?style=for-the-badge&logo=LeetCode&logoColor=orange" alt="LeetCode" />
-  </a>
-  <a href="https://github.com/avirajsalunkhe">
-    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-  </a>
-</p>
-
----
-
-<p align="center">
-  <i>⭐ From <a href="https://github.com/avirajsalunkhe">avirajsalunkhe</a> — Consistency beats intensity.</i>
-</p>
-
-
 
 
 
