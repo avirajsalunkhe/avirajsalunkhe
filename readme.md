@@ -108,10 +108,10 @@ fun_fact: I debug with coffee ☕
 ---
 ## 📊 LeetCode Stats
 <p align="center"> 
-  <img src="https://leetcard.jacoblin.cool/Avisalunkhe?theme=dark&font=baloo2&ext=heatmap" alt="Aviraj's LeetCode Stats" /> 
+  <img src="https://leetcard.jacoblin.cool/Avirajsalunkhe?theme=dark&font=baloo2&ext=heatmap" alt="Aviraj's LeetCode Stats" /> 
 </p>
 <p align="center"> 
-  <img src="https://leetcode-badge-showcase.vercel.app/api?username=Avisalunkhe&theme=dark" alt="Aviraj's LeetCode Badges" />
+  <img src="https://leetcode-badge-showcase.vercel.app/api?username=Avirajsalunkhe&theme=dark" alt="Aviraj's LeetCode Badges" />
 </p>
 
 ---
