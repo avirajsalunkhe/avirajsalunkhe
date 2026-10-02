@@ -40,7 +40,7 @@ I thrive at the intersection of **backend engineering**, **cloud infrastructure*
 
 ```yaml
 name         : Aviraj Salunkhe
-location     : Pune & Bangalore, India 🇮🇳
+location     : Pune & Bengaluru, India 🇮🇳
 role         : Full Stack Developer
 portfolio    : avirajsalunkhe.vercel.app
 linkedin     : in/avirajsalunkhe
