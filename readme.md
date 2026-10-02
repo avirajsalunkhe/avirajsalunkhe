@@ -1,16 +1,4 @@
-<details open>
-<summary><b>⚙️ GitHub Analytics</b></summary>
-<br>
-<p align="center">
-  <img width="88%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/0-profile-details.svg" alt="Profile Details" />
-</p>
-<p align="center">
-  <img width="38%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/3-stats.svg" alt="Stats" />
-</p>
-<p align="center">
-  <img src="https://streak-stats.demolab.com?user=avirajsalunkhe&theme=github-dark&hide_border=true" alt="Streak Stats" />
-</p>
-</details>
+
 
 
 
@@ -104,18 +92,19 @@ fun_fact: I debug with coffee ☕
 <br clear="right"/>
 
 ---
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  STREAK STATS                                  -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-## 🔥 Daily Streak & Max Streak
-<div align="center">
-
-
-<img src="https://github-readme-streak-stats-eight.vercel.app?user=avirajsalunkhe&theme=dark"/>
-
-</div>
-
+<details open>
+<summary><b>⚙️ GitHub Analytics</b></summary>
+<br>
+<p align="center">
+  <img width="88%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/0-profile-details.svg" alt="Profile Details" />
+</p>
+<p align="center">
+  <img width="38%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/3-stats.svg" alt="Stats" />
+</p>
+<p align="center">
+  <img src="https://streak-stats.demolab.com?user=avirajsalunkhe&theme=github-dark&hide_border=true" alt="Streak Stats" />
+</p>
+</details>
 
 ---
 ## 📊 LeetCode Stats
@@ -133,22 +122,6 @@ fun_fact: I debug with coffee ☕
 <p align="center">
   <img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/trophy.svg" alt="GitHub Trophies" />
 </p>
-
----
-
-
-<!-- ═══════════════════════════════════════════════════════════════ -->
-<!--                  ACTIVITY GRAPH                                -->
-<!-- ═══════════════════════════════════════════════════════════════ -->
-
-## ⚡ Contribution Activity
-<div align="center">
-
-![Commits](https://img.shields.io/badge/status-online-00f0ff?style=for-the-badge&logo=github&logoColor=white&labelColor=0a0a12)
-
-<img src="https://github.pumbas.net/api/contributions/avirajsalunkhe?colour=00f0ff&bgColour=0a0a12&dotColour=ff00e6&days=45&borderRadius=12" alt="Aviraj's Contribution Graph" width="100%"/>
-
-</div>
 
 ---
 
