@@ -1,4 +1,16 @@
-
+<details>
+<summary><b>⚙️ GitHub Analytics</b></summary>
+<br>
+<p align="center">
+  <img width="88%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/0-profile-details.svg" alt="Profile Details" />
+</p>
+<p align="center">
+  <img width="38%" src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/profile-summary-card-output/github_dark/3-stats.svg" alt="Stats" />
+</p>
+<p align="center">
+  <img src="https://streak-stats.demolab.com?user=avirajsalunkhe&theme=github-dark&hide_border=true" alt="Streak Stats" />
+</p>
+</details>
 
 
 
