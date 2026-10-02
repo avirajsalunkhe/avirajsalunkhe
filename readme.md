@@ -117,14 +117,6 @@ fun_fact: I debug with coffee ☕
 
 ---
 
-### 🏆 GitHub Trophies
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/avirajsalunkhe/avirajsalunkhe/main/trophy.svg" alt="GitHub Trophies" />
-</p>
-
----
-
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!--                     TECH STACK                                 -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
