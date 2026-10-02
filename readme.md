@@ -1,4 +1,4 @@
-<details>
+<details open>
 <summary><b>⚙️ GitHub Analytics</b></summary>
 <br>
 <p align="center">
