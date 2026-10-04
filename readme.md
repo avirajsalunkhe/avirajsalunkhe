@@ -251,4 +251,7 @@ fun_fact: I debug with coffee ☕
 
 <div align="center">
   <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=13&pause=1500&color=555555&center=true&vCenter=true&width=620&lines=Thanks+for+visiting+Aviraj%27s+profile!+%E2%AD%90+Star+a+repo+if+you+found+it+useful!" alt="Footer"/>
+  <a href="https://notbyai.fyi/#not-by-ai-mission">
+    <img width="131" alt="Written-By-Human-Not-By-AI-Badge-black@2x" src="https://github.com/user-attachments/assets/847dd474-1d1d-462a-a115-d162e544f714" align="right" />
+  </a>
 </div>
