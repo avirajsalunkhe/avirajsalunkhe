@@ -47,8 +47,7 @@ linkedin     : in/avirajsalunkhe
 availability : Open to Internships & Freelance 🚀
 
 stack:
-  backend  : Java · Spring Boot · Hibernate · JSP · Servlets · Microservices
-  frontend : HTML5 · CSS3 · JavaScript · PHP
+  backend  : Java · Spring Boot · Hibernate · JSP · Servlets · Microservices . JavaScript · PHP
   cloud    : AWS (EC2, S3, Load Balancer) · GCP
   devops   : Docker · Kubernetes · Jenkins · Terraform
   database : MySQL · PostgreSQL · MongoDB · SQL
