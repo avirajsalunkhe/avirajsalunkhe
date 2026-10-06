@@ -41,7 +41,7 @@ I thrive at the intersection of **backend engineering**, **cloud infrastructure*
 ```yaml
 name         : Aviraj Salunkhe
 location     : Pune & Bengaluru, India 🇮🇳
-role         : Full Stack Developer
+role         : Java Developer
 portfolio    : avirajsalunkhe.vercel.app
 linkedin     : in/avirajsalunkhe
 availability : Open to Internships & Freelance 🚀
