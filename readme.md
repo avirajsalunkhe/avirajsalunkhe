@@ -32,7 +32,7 @@
 
 ### 👨‍💻 Who I Am
 
-I'm **Aviraj Salunkhe**, a passionate **Full Stack Developer** from India 🇮🇳, currently based across **Pune & Bangalore**. I love building scalable, real-world web applications — from crafting clean frontends to architecting robust backends with Java & Spring Boot.
+I'm **Aviraj Salunkhe**, a passionate **Java Developer** from India 🇮🇳, currently based across **Pune & Bangalore**. I love building scalable, real-world web applications — from crafting clean frontends to architecting robust backends with Java & Spring Boot.
 
 I thrive at the intersection of **backend engineering**, **cloud infrastructure**, and **modern web development**. Whether it's designing RESTful APIs, deploying microservices on AWS, or containerizing apps with Docker — I enjoy every layer of the stack.
 
